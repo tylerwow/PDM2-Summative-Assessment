@@ -70,30 +70,25 @@ class Bullet extends GameObject {
         this.#xDif = this.#mx - this.getX();
         this.#yDif = this.#my - this.getY();
 
-        if (this.#xDif > this.#yDif && this.#xDif > 0) {
-            this.#yDif = floor(this.#yDif / this.#xDif * 5);
+        console.log(this.#xDif, this.#yDif)
+
+        if (this.#xDif >= this.#yDif && this.#xDif >= 0) {
+            this.#yDif = this.#yDif / this.#xDif * 5;
             this.#xDif = 5;
         }
-        else if (this.#yDif > this.#xDif && this.#yDif > 0) {
-            this.#xDif = floor(this.#xDif / this.#yDif * 5);
+        else if (this.#yDif >= this.#xDif && this.#yDif >= 0) {
+            this.#xDif = this.#xDif / this.#yDif * 5;
             this.#yDif = 5;
         }
-        else if (this.#xDif < this.#yDif && this.#xDif < 0) {
-            this.#xDif = this.#xDif * -1;
-            this.#yDif = this.#yDif * -1;
-
-            this.#yDif = floor(this.#yDif / this.#xDif * -5);
+        else if (this.#xDif <= this.#yDif && this.#xDif <= 0) {
+            this.#yDif = this.#yDif / this.#xDif * -5;
             this.#xDif = -5;
         }
-        else if (this.#yDif < this.#xDif && this.#yDif < 0) {
-            this.#xDif = this.#xDif * -1;
-            this.#yDif = this.#yDif * -1;
-
-            this.#xDif = floor(this.#xDif / this.#yDif * -5);
+        else if (this.#yDif <= this.#xDif && this.#yDif <= 0) {
+            this.#xDif = this.#xDif / this.#yDif * -5;
             this.#yDif = -5;
         }
 
-        console.log(this.#mx, this.#my)
         console.log(this.#xDif, this.#yDif)
     }
 
@@ -137,7 +132,5 @@ function draw() {
 }
 
 function mousePressed() {
-    console.log("Mouse Pressed")
-    
     bullets.push(new Bullet(player.getX(), player.getY(), mouseX, mouseY))
 }
