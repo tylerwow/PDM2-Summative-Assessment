@@ -53,23 +53,48 @@ class Player extends GameObject {
         if (keyIsDown(68)) {
             this.setX(this.getX() + this.#speed);
         }
-
-        if (mouseIsPressed) {
-            let bullet = new Bullet(this.getX(), this.getY(), mouseX, mouseY);
-            bullet.draw();
-            bullet.move();
-        }
     }
 }
 
 class Bullet extends GameObject {
     #mx;
     #my;
+    #yDif;
+    #xDif;
 
     constructor(x, y, mx, my) {
         super(x, y);
         this.#mx = mx;
         this.#my = my;
+
+        this.#xDif = this.#mx - this.getX();
+        this.#yDif = this.#my - this.getY();
+
+        if (this.#xDif > this.#yDif && this.#xDif > 0) {
+            this.#yDif = floor(this.#yDif / this.#xDif * 5);
+            this.#xDif = 5;
+        }
+        else if (this.#yDif > this.#xDif && this.#yDif > 0) {
+            this.#xDif = floor(this.#xDif / this.#yDif * 5);
+            this.#yDif = 5;
+        }
+        else if (this.#xDif < this.#yDif && this.#xDif < 0) {
+            this.#xDif = this.#xDif * -1;
+            this.#yDif = this.#yDif * -1;
+
+            this.#yDif = floor(this.#yDif / this.#xDif * -5);
+            this.#xDif = -5;
+        }
+        else if (this.#yDif < this.#xDif && this.#yDif < 0) {
+            this.#xDif = this.#xDif * -1;
+            this.#yDif = this.#yDif * -1;
+
+            this.#xDif = floor(this.#xDif / this.#yDif * -5);
+            this.#yDif = -5;
+        }
+
+        console.log(this.#mx, this.#my)
+        console.log(this.#xDif, this.#yDif)
     }
 
     draw() {
@@ -80,12 +105,16 @@ class Bullet extends GameObject {
     }
 
     move() {
+        this.setX(this.getX() + this.#xDif);
+        this.setY(this.getY() + this.#yDif);
+
         //this.setX(this.getX() + 5);
-        this.setY(this.getY() + 5);
+        //this.setY(this.getY() + 5);
     }
 }
 
 let player;
+let bullets = [];
 
 function setup() {
     createCanvas(600, 450);
@@ -100,4 +129,15 @@ function draw() {
 
     player.draw();
     player.action();
+
+    for (bullet of bullets) {
+        bullet.draw();
+        bullet.move();
+    }
+}
+
+function mousePressed() {
+    console.log("Mouse Pressed")
+    
+    bullets.push(new Bullet(player.getX(), player.getY(), mouseX, mouseY))
 }
