@@ -1,7 +1,8 @@
-//TODO: Add collision rectangles and hit function
 class GameObject {
     #x;
     #y;
+    #width;
+    #height;
 
     constructor(x, y) {
         this.#x = x;
@@ -16,12 +17,35 @@ class GameObject {
         return this.#y;
     }
 
-    setX(x) {
-        this.#x = x;
+    getWidth() {
+        return this.#width;
     }
 
-    setY(y) {
-        this.#y = y;
+    getHeight() {
+        return this.#height;
+    }
+
+    setX(newX) {
+        this.#x = newX;
+    }
+
+    setY(newY) {
+        this.#y = newY;
+    }
+
+    setRectangle(newWidth, newHeight) {
+        this.#width = newWidth;
+        this.#height = newHeight;
+    }
+
+    hit(other) {
+        if (this.#x + this.#width >= other.getX()
+            && this.#x <= other.getX() + other.getWidth()
+            && this.#y + this.#height >= other.getY()
+            && this.#x <= other.getY() + other.getHeight()) {
+            return true;
+        }
+        return false;
     }
 }
 
