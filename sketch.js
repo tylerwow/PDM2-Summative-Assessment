@@ -3,10 +3,14 @@ class GameObject {
     #y;
     #width;
     #height;
+    #isActive;
 
-    constructor(x, y) {
+    constructor(x, y, width, height) {
         this.#x = x;
         this.#y = y;
+        this.#width = width;
+        this.#height = height;
+        this.#isActive = true;
     }
 
     getX() {
@@ -25,12 +29,20 @@ class GameObject {
         return this.#height;
     }
 
+    getActive() {
+        return this.#isActive;
+    }
+
     setX(newX) {
         this.#x = newX;
     }
 
     setY(newY) {
         this.#y = newY;
+    }
+
+    deactivate() {
+        this.#isActive = false;
     }
 
     setRectangle(newWidth, newHeight) {
@@ -53,8 +65,8 @@ class Character extends GameObject {
     #hp;
     #speed;
 
-    constructor(x, y, hp, speed) {
-        super(x, y);
+    constructor(x, y, width, height, hp, speed) {
+        super(x, y, width, height);
         this.#hp = hp;
         this.#speed = speed;
     }
@@ -66,15 +78,26 @@ class Character extends GameObject {
     getHp() {
         return this.#hp;
     }
+
+    removeHp(amount) {
+        this.#hp -= amount;
+        if (this.#hp <= 0) {
+            this.#hp = 0;
+            this.deactivate();
+        }
+    }
 }
 
 //TODO: Add HP to player and HP depletion for collision with enemies
 class Player extends Character {
-    constructor(x, y, hp, speed) {
-        super(x, y, hp, speed);
+    constructor(x, y, width, height, hp, speed) {
+        super(x, y, width, height, hp, speed);
+
+        this.setRectangle(this.getWidth(), this.getHeight());
     }
 
     draw() {
+        ellipse(CORNER)
         strokeWeight(2);
         stroke(0);
         fill(242, 213, 177);
@@ -99,22 +122,32 @@ class Player extends Character {
 
 //TODO: Deplete HP once bullet hits
 class Zombie extends Character {
-        constructor(x, y, hp, speed) {
-        super(x, y, hp, speed);
+        constructor(x, y, width, height, hp, speed) {
+            super(x, y, width, height, hp, speed);
+
+            this.setRectangle(this.getWidth(), this.getHeight())
     }
 
     draw() {
-        strokeWeight(2);
-        stroke(0);
-        fill(34, 125, 14);
-        circle(this.getX(), this.getY(), 30);
+        if (this.getActive()) {
+            ellipseMode(CORNER)
 
-        noStroke();
-        fill(0);
-        rect(this.getX() - 15, this.getY() - 25, 30, 5);
+            strokeWeight(2);
+            stroke(0);
+            fill(34, 125, 14);
+            circle(this.getX(), this.getY(), 30);
 
-        fill(235, 64, 52);
-        rect(this.getX() - 15, this.getY() - 25, this.getHp() / 2, 5);
+            noStroke();
+            fill(0);
+            rect(this.getX(), this.getY() - 10, 30, 5);
+
+            fill(235, 64, 52);
+            rect(this.getX(), this.getY() - 10, this.getHp() / 2, 5);
+
+            // stroke(176, 66, 245);
+            // noFill();
+            // rect(this.getX(), this.getY(), this.getWidth(), this.getHeight())
+        }
     }
 
     move(playerX, playerY) {
@@ -139,10 +172,9 @@ class Bullet extends GameObject {
     #my;
     #yDif;
     #xDif;
-    #isActive;
 
-    constructor(x, y, mx, my) {
-        super(x, y);
+    constructor(x, y, width, height, mx, my) {
+        super(x, y, width, height);
         this.#mx = mx;
         this.#my = my;
 
@@ -170,15 +202,20 @@ class Bullet extends GameObject {
 
         console.log(this.#xDif, this.#yDif);
 
-        this.#isActive = true;
+        this.setRectangle(this.getWidth(), this.getHeight());
     }
 
     draw() {
-        if (this.#isActive) {
+        if (this.getActive()) {
+            ellipseMode(CORNER);
             strokeWeight(1);
             stroke(0);
             fill(252, 210, 71);
             circle(this.getX(), this.getY(), 8);
+
+            // stroke(176, 66, 245);
+            // noFill();
+            // rect(this.getX(), this.getY(), this.getWidth(), this.getHeight())
         }
     }
 
@@ -188,15 +225,37 @@ class Bullet extends GameObject {
     }
 }
 
+class GUI {
+    constructor() {}
+
+    draw(hp) {
+        fill(0);
+        rect(10, height - 40, 200, 30);
+
+        fill(138, 212, 42);
+        stroke(0);
+        rect(10, height - 40, hp * 2, 30);
+
+        fill(255)
+        noStroke();
+        textSize(20);
+        text(hp + " / 100", 18, height - 18);
+    }
+}
+
 let player;
 let zombie;
-let bullets = [];
+const bullets = new Set();
+
+let gui;
 
 function setup() {
     createCanvas(600, 450);
 
-    player = new Player(width / 2, height / 2, 100, 2);
-    zombie = new Zombie(width / 2 + 100, height / 2, 60, 1);
+    player = new Player(width / 2, height / 2, 30, 30, 100, 2);
+    zombie = new Zombie(width / 2 + 100, height / 2, 30, 30, 60, 1);
+
+    gui = new GUI();
 }
 
 function draw() {
@@ -210,12 +269,24 @@ function draw() {
     zombie.draw();
     zombie.move(player.getX(), player.getY());
 
+    if (player.hit(zombie)) {
+        player.removeHp(5);
+    }
+
     for (bullet of bullets) {
         bullet.draw();
         bullet.move();
+
+        if (bullet.hit(zombie)) {
+            console.log('hit')
+            bullets.delete(bullet);
+            zombie.removeHp(20);
+        }
     }
+
+    gui.draw(player.getHp());
 }
 
 function mousePressed() {
-    bullets.push(new Bullet(player.getX(), player.getY(), mouseX, mouseY))
+    bullets.add(new Bullet(player.getX() + 15, player.getY() + 15, 8, 8, mouseX, mouseY))
 }
