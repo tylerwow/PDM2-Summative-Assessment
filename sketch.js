@@ -336,5 +336,8 @@ function draw() {
 }
 
 function mousePressed() {
-    bullets.add(new Bullet(player.getX() + 15, player.getY() + 15, 8, 8, mouseX, mouseY))
+    if (player.getActive()) {
+        bullets.add(new Bullet(player.getX() + 15, player.getY() + 15, 8, 8, mouseX, mouseY))
+
+    }
 }
