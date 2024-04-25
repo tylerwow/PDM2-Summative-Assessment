@@ -54,10 +54,29 @@ class GameObject {
         if (this.#x + this.#width >= other.getX()
             && this.#x <= other.getX() + other.getWidth()
             && this.#y + this.#height >= other.getY()
-            && this.#x <= other.getY() + other.getHeight()) {
-            return true;
-        }
+            && this.#y <= other.getY() + other.getHeight()) {
+                return true;
+            }
         return false;
+    }
+
+    drawRect() {
+        strokeWeight(2);
+        stroke(204, 0, 204);
+        noFill();
+        rect(this.getX(), this.getY(), this.getWidth(), this.getHeight())
+    }
+}
+
+class Wall extends GameObject {
+    constructor(x, y, width, height) {
+        super(x, y, width, height);
+    }
+
+    draw() {
+        noStroke();
+        fill(40, 40, 40);
+        rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
     }
 }
 
@@ -88,7 +107,6 @@ class Character extends GameObject {
     }
 }
 
-//TODO: Add HP to player and HP depletion for collision with enemies
 class Player extends Character {
     constructor(x, y, width, height, hp, speed) {
         super(x, y, width, height, hp, speed);
@@ -97,38 +115,46 @@ class Player extends Character {
     }
 
     draw() {
+        //this.drawRect();
+        
         ellipse(CORNER)
         strokeWeight(2);
         stroke(0);
         fill(242, 213, 177);
         circle(this.getX(), this.getY(), 30);
+
+        stroke(204, 0, 204);
+        rect(this.getX(), this.getY(), this.getWidth(), this.getHeight)
     }
 
     move() {
-        if (keyIsDown(87)) {
-            this.setY(this.getY() - this.getSpeed());
-        }
-        if (keyIsDown(83)) {
-            this.setY(this.getY() + this.getSpeed());
-        }
-        if (keyIsDown(65)) {
-            this.setX(this.getX() - this.getSpeed());
-        }
-        if (keyIsDown(68)) {
-            this.setX(this.getX() + this.getSpeed());
+        if(this.getActive()) {
+            if (keyIsDown(87)) { // W
+                this.setY(this.getY() - this.getSpeed());
+            }
+            if (keyIsDown(83)) { // S
+                this.setY(this.getY() + this.getSpeed());
+            }
+            if (keyIsDown(65)) { // A
+                this.setX(this.getX() - this.getSpeed());
+            }
+            if (keyIsDown(68)) { // D
+                this.setX(this.getX() + this.getSpeed());
+            }
         }
     }
 }
 
-//TODO: Deplete HP once bullet hits
 class Zombie extends Character {
-        constructor(x, y, width, height, hp, speed) {
-            super(x, y, width, height, hp, speed);
+    constructor(x, y, width, height, hp, speed) {
+        super(x, y, width, height, hp, speed);
 
-            this.setRectangle(this.getWidth(), this.getHeight())
+        this.setRectangle(this.getWidth(), this.getHeight())
     }
 
     draw() {
+        //this.drawRect();
+
         if (this.getActive()) {
             ellipseMode(CORNER)
 
@@ -206,16 +232,14 @@ class Bullet extends GameObject {
     }
 
     draw() {
+        //this.drawRect();
+
         if (this.getActive()) {
             ellipseMode(CORNER);
             strokeWeight(1);
             stroke(0);
             fill(252, 210, 71);
             circle(this.getX(), this.getY(), 8);
-
-            // stroke(176, 66, 245);
-            // noFill();
-            // rect(this.getX(), this.getY(), this.getWidth(), this.getHeight())
         }
     }
 
@@ -229,11 +253,13 @@ class GUI {
     constructor() {}
 
     draw(hp) {
-        fill(0);
+        strokeWeight(2);
+        fill(50, 50, 50);
+        stroke(50, 50, 50);
         rect(10, height - 40, 200, 30);
 
         fill(138, 212, 42);
-        stroke(0);
+        stroke(50, 50, 50);
         rect(10, height - 40, hp * 2, 30);
 
         fill(255)
@@ -244,17 +270,20 @@ class GUI {
 }
 
 let player;
-let zombie;
+const zombies = new Set();
 const bullets = new Set();
 
 let gui;
+let wall;
 
 function setup() {
     createCanvas(600, 450);
 
     player = new Player(width / 2, height / 2, 30, 30, 100, 2);
-    zombie = new Zombie(width / 2 + 100, height / 2, 30, 30, 60, 1);
-
+    zombies.add(new Zombie(width / 2 + 100, height / 2, 30, 30, 60, 1));
+    zombies.add(new Zombie(width / 2 + 100, height / 2 + 100, 30, 30, 60, 1));
+    
+    wall = new Wall(50, 50, width - 100, 50);
     gui = new GUI();
 }
 
@@ -266,21 +295,40 @@ function draw() {
     player.draw();
     player.move();
 
-    zombie.draw();
-    zombie.move(player.getX(), player.getY());
+    wall.draw();
 
-    if (player.hit(zombie)) {
-        player.removeHp(5);
+    //TODO: Implement player collision with wall
+    if (player.hit(wall)) {
+        
     }
 
-    for (bullet of bullets) {
+    for (let zombie of zombies) {
+        zombie.draw();
+        zombie.move(player.getX(), player.getY());
+
+        if (!zombie.getActive()) {
+            zombies.delete(zombie);
+        }
+
+        if (player.hit(zombie)) {
+            player.removeHp(1);
+        }
+    }
+
+    for (let bullet of bullets) {
         bullet.draw();
         bullet.move();
 
-        if (bullet.hit(zombie)) {
-            console.log('hit')
+        for (let zombie of zombies) {
+            if (bullet.hit(zombie)) {
+                console.log('hit')
+                bullets.delete(bullet);
+                zombie.removeHp(20);
+            }
+        }
+
+        if (bullet.hit(wall)) {
             bullets.delete(bullet);
-            zombie.removeHp(20);
         }
     }
 
