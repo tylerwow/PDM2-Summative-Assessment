@@ -98,6 +98,10 @@ class Character extends GameObject {
         return this.#hp;
     }
 
+    setSpeed(newSpeed) {
+        this.#speed = newSpeed;
+    }
+
     removeHp(amount) {
         this.#hp -= amount;
         if (this.#hp <= 0) {
@@ -127,7 +131,7 @@ class Player extends Character {
         rect(this.getX(), this.getY(), this.getWidth(), this.getHeight)
     }
 
-    move() {
+    move(wall) {
         if(this.getActive()) {
             if (keyIsDown(87)) { // W
                 this.setY(this.getY() - this.getSpeed());
@@ -140,6 +144,34 @@ class Player extends Character {
             }
             if (keyIsDown(68)) { // D
                 this.setX(this.getX() + this.getSpeed());
+            }
+
+            //Boundary Collision
+            if (this.getX() < 0) {
+                this.setX(this.getX() + this.getSpeed());
+            }
+            if (this.getX() > width - this.getWidth()) {
+                this.setX(this.getX() - this.getSpeed());
+            }
+            if (this.getY() < 0) {
+                this.setY(this.getY() + this.getSpeed());
+            }
+            if (this.getY() > height - this.getWidth()) {
+                this.setY(this.getY() - this.getSpeed());
+            }
+
+            //Wall Collision (Needs some work still)
+            if (this.getX() < wall.getX() && this.hit(wall)) {
+                this.setX(this.getX() - this.getSpeed());
+            }
+            if (this.getX() > wall.getWidth() && this.hit(wall)) {
+                this.setX(this.getX() + this.getSpeed());
+            }
+            if (this.getY() < wall.getY() && this.hit(wall)) {
+                this.setY(this.getY() - this.getSpeed());
+            }
+            if (this.getY() > wall.getHeight() && this.hit(wall)) {
+                this.setY(this.getY() + this.getSpeed());
             }
         }
     }
@@ -293,7 +325,7 @@ function draw() {
     cursor(CROSS);
 
     player.draw();
-    player.move();
+    player.move(wall);
 
     wall.draw();
 
@@ -338,6 +370,5 @@ function draw() {
 function mousePressed() {
     if (player.getActive()) {
         bullets.add(new Bullet(player.getX() + 15, player.getY() + 15, 8, 8, mouseX, mouseY))
-
     }
 }
