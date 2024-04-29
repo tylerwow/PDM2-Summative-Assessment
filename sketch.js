@@ -69,8 +69,11 @@ class GameObject {
 }
 
 class Wall extends GameObject {
-    constructor(x, y, width, height) {
+    #isHittable;
+
+    constructor(x, y, width, height, isHittable) {
         super(x, y, width, height);
+        this.#isHittable = isHittable;
     }
 
     draw() {
@@ -81,17 +84,19 @@ class Wall extends GameObject {
 
     //Wall collision (needs some work still)
     collide(other) {
-        if (other.getX() < this.getX() && this.hit(other)) {
-            other.setX(other.getX() - other.getSpeed());
-        }
-        if (other.getX() > this.getWidth() && this.hit(other)) {
-            other.setX(other.getX() + other.getSpeed());
-        }
-        if (other.getY() < this.getY() && this.hit(other)) {
-            other.setY(other.getY() - other.getSpeed());
-        }
-        if (other.getY() > this.getHeight() && this.hit(other)) {
-            other.setY(other.getY() + other.getSpeed());
+        if (this.#isHittable) {
+            if (other.getX() < this.getX() && this.hit(other)) {
+                other.setX(other.getX() - other.getSpeed());
+            }
+            if (other.getX() > this.getWidth() && this.hit(other)) {
+                other.setX(other.getX() + other.getSpeed());
+            }
+            if (other.getY() < this.getY() && this.hit(other)) {
+                other.setY(other.getY() - other.getSpeed());
+            }
+            if (other.getY() > this.getHeight() && this.hit(other)) {
+                other.setY(other.getY() + other.getSpeed());
+            }
         }
     }
 }
@@ -175,22 +180,6 @@ class Player extends Character {
             if (this.getY() > height - this.getWidth()) {
                 this.setY(this.getY() - this.getSpeed());
             }
-
-            //Wall Collision (Needs some work still)
-            /*
-            if (this.getX() < wall.getX() && this.hit(wall)) {
-                this.setX(this.getX() - this.getSpeed());
-            }
-            if (this.getX() > wall.getWidth() && this.hit(wall)) {
-                this.setX(this.getX() + this.getSpeed());
-            }
-            if (this.getY() < wall.getY() && this.hit(wall)) {
-                this.setY(this.getY() - this.getSpeed());
-            }
-            if (this.getY() > wall.getHeight() && this.hit(wall)) {
-                this.setY(this.getY() + this.getSpeed());
-            }
-            */
         }
     }
 }
@@ -333,7 +322,7 @@ function setup() {
     zombies.add(new Zombie(width / 2 + 100, height / 2, 30, 30, 60, 1));
     zombies.add(new Zombie(width / 2 + 100, height / 2 + 100, 30, 30, 60, 1));
     
-    wall = new Wall(50, 50, width - 100, 50);
+    wall = new Wall(50, 50, width - 100, 50, true);
     gui = new GUI();
 }
 
