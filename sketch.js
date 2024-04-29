@@ -348,11 +348,6 @@ function draw() {
     wall.draw();
     wall.collide(player);
 
-    //TODO: Implement player collision with wall
-    if (player.hit(wall)) {
-        
-    }
-
     for (let zombie of zombies) {
         zombie.draw();
         zombie.move(player.getX(), player.getY());
