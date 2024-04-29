@@ -78,6 +78,22 @@ class Wall extends GameObject {
         fill(40, 40, 40);
         rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
     }
+
+    //Wall collision (needs some work still)
+    collide(other) {
+        if (other.getX() < this.getX() && this.hit(other)) {
+            other.setX(other.getX() - other.getSpeed());
+        }
+        if (other.getX() > this.getWidth() && this.hit(other)) {
+            other.setX(other.getX() + other.getSpeed());
+        }
+        if (other.getY() < this.getY() && this.hit(other)) {
+            other.setY(other.getY() - other.getSpeed());
+        }
+        if (other.getY() > this.getHeight() && this.hit(other)) {
+            other.setY(other.getY() + other.getSpeed());
+        }
+    }
 }
 
 class Character extends GameObject {
@@ -131,7 +147,7 @@ class Player extends Character {
         rect(this.getX(), this.getY(), this.getWidth(), this.getHeight)
     }
 
-    move(wall) {
+    move() {
         if(this.getActive()) {
             if (keyIsDown(87)) { // W
                 this.setY(this.getY() - this.getSpeed());
@@ -161,6 +177,7 @@ class Player extends Character {
             }
 
             //Wall Collision (Needs some work still)
+            /*
             if (this.getX() < wall.getX() && this.hit(wall)) {
                 this.setX(this.getX() - this.getSpeed());
             }
@@ -173,6 +190,7 @@ class Player extends Character {
             if (this.getY() > wall.getHeight() && this.hit(wall)) {
                 this.setY(this.getY() + this.getSpeed());
             }
+            */
         }
     }
 }
@@ -181,7 +199,7 @@ class Zombie extends Character {
     constructor(x, y, width, height, hp, speed) {
         super(x, y, width, height, hp, speed);
 
-        this.setRectangle(this.getWidth(), this.getHeight())
+        this.setRectangle(this.getWidth(), this.getHeight());
     }
 
     draw() {
@@ -325,9 +343,10 @@ function draw() {
     cursor(CROSS);
 
     player.draw();
-    player.move(wall);
+    player.move();
 
     wall.draw();
+    wall.collide(player);
 
     //TODO: Implement player collision with wall
     if (player.hit(wall)) {
@@ -345,6 +364,8 @@ function draw() {
         if (player.hit(zombie)) {
             player.removeHp(1);
         }
+
+        wall.collide(zombie);
     }
 
     for (let bullet of bullets) {
