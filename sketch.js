@@ -49,6 +49,7 @@ function draw() {
     }
 
     key.draw();
+    key.collect(player);
 
     for (let zombie of zombies) {
         zombie.draw();
