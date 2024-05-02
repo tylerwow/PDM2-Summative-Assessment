@@ -49,7 +49,9 @@ function draw() {
     }
 
     key.draw();
-    key.collect(player);
+    if (key.collect(player)) {
+        player.hasKey();
+    }
 
     for (let zombie of zombies) {
         zombie.draw();
@@ -83,7 +85,7 @@ function draw() {
         }
     }
 
-    gui.draw(player.getHp());
+    gui.draw(player.getHp(), player.getHasGun(), player.getHasKey());
 }
 
 function mousePressed() {

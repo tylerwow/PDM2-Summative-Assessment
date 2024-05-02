@@ -36,10 +36,16 @@ class Character extends GameObject {
 }
 
 class Player extends Character {
+    #hasGun;
+    #hasKey;
+
     constructor(x, y, width, height, hp, speed) {
         super(x, y, width, height, hp, speed);
 
         this.setRectangle(this.getWidth(), this.getHeight());
+
+        this.#hasGun = true;
+        this.#hasKey = false;
     }
 
     draw() {
@@ -84,6 +90,30 @@ class Player extends Character {
                 this.setY(this.getY() - this.getSpeed());
             }
         }
+    }
+
+    hasGun() {
+        this.#hasGun = true;
+    }
+
+    hasNoGun() {
+        this.#hasGun = false;
+    }
+
+    getHasGun() {
+        return this.#hasGun;
+    }
+
+    hasKey() {
+        this.#hasKey = true;
+    }
+    
+    hasNoKey() {
+        this.#hasKey = false;
+    }
+
+    getHasKey() {
+        return this.#hasKey;
     }
 }
 
