@@ -3,6 +3,7 @@ TODO:
 - Design collectable sprites
 - Implement collectables
 - Implement Mutant Zombie
+= Zombie / NPC collisions
 - Design rooms in Photoshop
 - Import door to new rooms
 - Implement rooms
