@@ -5,10 +5,15 @@ class Collectable extends GameObject {
     }
 
     collect(other) {
-        if (keyIsDown(69) && this.hit(other) && this.getActive()) {
-            console.log('collected');
-            this.deactivate();
-            return true;
+        if (this.hit(other) && this.getActive()) {
+            textSize(15);
+            fill(255);
+            text('Take (E)', this.getX() - 3, this.getY() - 5);
+            if (keyIsDown(69)) {
+                console.log('collected');
+                this.deactivate();
+                return true;
+            }
         }
         return false;
     }
@@ -20,6 +25,20 @@ class Medkit extends Collectable {
     constructor(x, y) {
         super(x, y, width, height);
         this.#img = loadImage('assets/Medkit.png');
+    }
+
+    collect(other) {
+        if (this.hit(other) && this.getActive()) {
+            textSize(15);
+            fill(255);
+            text('Heal (E)', this.getX() - 3, this.getY() - 5);
+            if (keyIsDown(69)) {
+                console.log('collected');
+                this.deactivate();
+                return true;
+            }
+        }
+        return false;
     }
     
     draw() {
@@ -45,3 +64,19 @@ class Key extends Collectable {
         }
     }
 }
+
+/*
+class Gun extends Collectable {
+    constructor(x, y) {
+        super(x, y, width, height);
+        this.#img = loadImage('assets/Gun.png');
+    }
+    
+    draw() {
+        //this.drawRect();
+        if (this.getActive()) {
+            image(this.#img, this.getX() + 7, this.getY() + 7, this.getWidth() - 15, this.getHeight() - 15);
+        }
+    }
+}
+*/

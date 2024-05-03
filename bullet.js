@@ -13,8 +13,6 @@ class Bullet extends GameObject {
         this.#xDif = this.#mx - this.getX();
         this.#yDif = this.#my - this.getY();
 
-        console.log(this.#xDif, this.#yDif)
-
         if (this.#xDif >= this.#yDif && this.#xDif > 0) {
             this.#yDif = this.#yDif / this.#xDif * 5;
             this.#xDif = 5;
@@ -31,8 +29,6 @@ class Bullet extends GameObject {
             this.#xDif = this.#xDif / this.#yDif * -5;
             this.#yDif = -5;
         }
-
-        console.log(this.#xDif, this.#yDif);
 
         this.setRectangle(this.getWidth(), this.getHeight());
     }
