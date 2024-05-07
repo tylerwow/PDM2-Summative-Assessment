@@ -6,6 +6,7 @@ class Collectable extends GameObject {
 
     collect(other) {
         if (this.hit(other) && this.getActive()) {
+            noStroke();
             textSize(15);
             fill(255);
             text('Take (E)', this.getX() - 3, this.getY() - 5);
@@ -29,6 +30,7 @@ class Medkit extends Collectable {
 
     collect(other) {
         if (this.hit(other) && this.getActive()) {
+            noStroke();
             textSize(15);
             fill(255);
             text('Heal (E)', this.getX() - 3, this.getY() - 5);
@@ -65,8 +67,13 @@ class Key extends Collectable {
     }
 }
 
-/*
+// ICON FROM:
+// https://iconduck.com/emojis/141685/gun
+
+
 class Gun extends Collectable {
+    #img;
+
     constructor(x, y) {
         super(x, y, width, height);
         this.#img = loadImage('assets/Gun.png');
@@ -79,4 +86,3 @@ class Gun extends Collectable {
         }
     }
 }
-*/

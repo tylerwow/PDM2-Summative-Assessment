@@ -44,12 +44,12 @@ class Player extends Character {
 
         this.setRectangle(this.getWidth(), this.getHeight());
 
-        this.#hasGun = true;
+        this.#hasGun = false;
         this.#hasKey = false;
     }
 
     draw() {
-        this.drawRect();
+        //this.drawRect();
 
         ellipseMode(CORNER)
         strokeWeight(2);

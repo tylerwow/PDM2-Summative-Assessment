@@ -1,7 +1,5 @@
 /*
 TODO:
-- Design collectable sprites
-- Implement collectables
 - Implement Mutant Zombie
 = Zombie / NPC collisions
 - Design rooms in Photoshop
@@ -15,59 +13,35 @@ const zombies = new Set();
 const bullets = new Set();
 
 let gui;
-let wall;
+let gun;
 
-let medkit;
-let key;
+let imgRoom1;
+
+function preload() {
+    imgRoom1 = loadImage('assets/Room1.png');
+}
 
 function setup() {
     createCanvas(600, 450);
-
-    player = new Player(width / 2, height / 2, 30, 30, 100, 2);
-    zombies.add(new Zombie(width / 2 + 100, height / 2, 30, 30, 60, 1));
-    zombies.add(new Zombie(width / 2 + 100, height / 2 + 100, 30, 30, 60, 1));
     
-    wall = new Wall(50, 50, width - 100, 50, true);
+    player = new Player(width / 2 - 30, height / 2 - 15, 30, 30, 100, 2);
     gui = new GUI();
-    medkit = new Medkit(width / 2 - 25, 400);
-    key = new Key(width / 2 + 30, 400)
+
+    gun = new Gun(400, width / 2 - 100);
 }
 
 function draw() {
-    background(149, 199, 113);
+    background(imgRoom1);
 
     cursor(CROSS);
 
+    gun.draw();
+    if (gun.collect(player)) {
+        player.hasGun();
+    }
+
     player.draw();
     player.move();
-
-    wall.draw();
-    wall.collide(player);
-
-    medkit.draw();
-    if (medkit.collect(player)) {
-        player.restoreHp();
-    }
-
-    key.draw();
-    if (key.collect(player)) {
-        player.hasKey();
-    }
-
-    for (let zombie of zombies) {
-        zombie.draw();
-        zombie.move(player.getX(), player.getY());
-
-        if (!zombie.getActive()) {
-            zombies.delete(zombie);
-        }
-
-        if (player.hit(zombie)) {
-            player.removeHp(1);
-        }
-
-        wall.collide(zombie);
-    }
 
     for (let bullet of bullets) {
         bullet.draw();
@@ -80,17 +54,13 @@ function draw() {
                 zombie.removeHp(20);
             }
         }
-
-        if (bullet.hit(wall)) {
-            bullets.delete(bullet);
-        }
     }
 
     gui.draw(player.getHp(), player.getHasGun(), player.getHasKey());
 }
 
 function mousePressed() {
-    if (player.getActive()) {
+    if (player.getActive() && player.getHasGun()) {
         bullets.add(new Bullet(player.getX() + 15, player.getY() + 15, 8, 8, mouseX, mouseY))
     }
 }
