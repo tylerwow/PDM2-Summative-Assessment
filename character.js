@@ -49,9 +49,9 @@ class Player extends Character {
     }
 
     draw() {
-        //this.drawRect();
-        
-        ellipse(CORNER)
+        this.drawRect();
+
+        ellipseMode(CORNER)
         strokeWeight(2);
         stroke(0);
         fill(242, 213, 177);
