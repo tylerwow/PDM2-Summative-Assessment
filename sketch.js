@@ -8,6 +8,9 @@ TODO:
 - ...and more
 */
 
+//IMPORTANT!!
+//FIX BACKGROUND SIZE
+
 let player;
 const zombies = new Set();
 const bullets = new Set();
