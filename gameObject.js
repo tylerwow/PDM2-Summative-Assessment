@@ -41,6 +41,10 @@ class GameObject {
         this.#y = newY;
     }
 
+    activate() {
+        this.#isActive = true;
+    }
+
     deactivate() {
         this.#isActive = false;
     }

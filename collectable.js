@@ -11,7 +11,6 @@ class Collectable extends GameObject {
             fill(255);
             text('Take (E)', this.getX() - 3, this.getY() - 5);
             if (keyIsDown(69)) {
-                console.log('collected');
                 this.deactivate();
                 return true;
             }
@@ -35,7 +34,6 @@ class Medkit extends Collectable {
             fill(255);
             text('Heal (E)', this.getX() - 3, this.getY() - 5);
             if (keyIsDown(69)) {
-                console.log('collected');
                 this.deactivate();
                 return true;
             }
@@ -67,7 +65,7 @@ class Key extends Collectable {
     }
 }
 
-// ICON FROM:
+// GUN ICON FROM:
 // https://iconduck.com/emojis/141685/gun
 
 
