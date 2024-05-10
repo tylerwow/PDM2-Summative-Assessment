@@ -8,9 +8,6 @@ TODO:
 - ...and more
 */
 
-//IMPORTANT!!
-//FIX BACKGROUND SIZE
-
 let player;
 const zombies = new Set();
 const bullets = new Set();
@@ -18,10 +15,18 @@ const bullets = new Set();
 let gui;
 let gun;
 
+let exits = new Set();
+
 let imgRoom1;
+let imgRoom2;
+let imgRoom3;
+
+let gameState;
 
 function preload() {
     imgRoom1 = loadImage('assets/Room1.png');
+    imgRoom2 = loadImage('assets/Room2.png');
+    imgRoom3 = loadImage('assets/Room3.png');
 }
 
 function setup() {
@@ -31,10 +36,26 @@ function setup() {
     gui = new GUI();
 
     gun = new Gun(400, width / 2 - 100);
+
+    gameState = 1;
 }
 
 function draw() {
-    background(imgRoom1);
+    switch (gameState) {
+        case 0:
+            //Title Screen
+            break;
+        case 1:
+            //Room 1
+            background(imgRoom1);
+
+            exits.add(new Exit(width - 5, 0, 5, height, 2));
+            break;
+        case 2:
+            //Room 2
+            background(imgRoom2);
+            break;
+    }
 
     cursor(CROSS);
 
@@ -56,6 +77,12 @@ function draw() {
                 bullets.delete(bullet);
                 zombie.removeHp(20);
             }
+        }
+    }
+
+    for (let exit of exits) {
+        if (player.hit(exit)) {
+            gameState = exit.getDestination();
         }
     }
 
