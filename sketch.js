@@ -72,12 +72,22 @@ function draw() {
             background(imgRoom2);
             
             if (!sceneSetup) {
-                exits.add(new Exit(0, 0, 5, height, 1), new Exit(width - 5, 0, 5, height, 1));
-                zombies.add(new Zombie(400, height / 2, 30, 30, 60));
+                exits.add(new Exit(0, 0, 5, height, 1));
+                exits.add(new Exit(width - 5, 0, 5, height, 3));
+                zombies.add(new Zombie(width / 2, height / 2 - 15, 30, 30, 60, 1));
                 sceneSetup = true;
             }
 
             break;
+        case 3:
+            //Room 3
+            background(imgRoom3)
+
+            if (!sceneSetup) {
+                exits.add(new Exit(0, 0, 5, height, 2));
+                zombies.add(new Zombie(width / 2, height / 2 - 15, 30, 30, 60, 1));
+                sceneSetup = true;
+            }
     }
 
     cursor(CROSS);
@@ -88,6 +98,7 @@ function draw() {
     for (let zombie of zombies) {
         zombie.draw();
         zombie.move(player.getX(), player.getY());
+        console.log(zombie);
         
         if (!zombie.getActive()) {
             zombies.delete(zombie);
