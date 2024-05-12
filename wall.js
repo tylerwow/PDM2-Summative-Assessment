@@ -11,13 +11,13 @@ class Wall extends GameObject {
         if (other.getX() < this.getX() && this.hit(other)) {
             other.setX(other.getX() - other.getSpeed());
         }
-        if (other.getX() > this.getWidth() && this.hit(other)) {
+        if (other.getX() > this.getX() + this.getWidth() - 2 && this.hit(other)) {
             other.setX(other.getX() + other.getSpeed());
         }
         if (other.getY() < this.getY() && this.hit(other)) {
             other.setY(other.getY() - other.getSpeed());
         }
-        if (other.getY() > this.getHeight() && this.hit(other)) {
+        if (other.getY() > this.getY() + this.getHeight() - 2 && this.hit(other)) {
             other.setY(other.getY() + other.getSpeed());
         }
     }
