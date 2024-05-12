@@ -18,6 +18,8 @@ const walls = new Set();
 const exits = new Set();
 
 let gun;
+let key;
+let medkit;
 
 let imgRoom1;
 let imgRoom2;
@@ -39,7 +41,7 @@ function setup() {
     player = new Player(width / 2 - 30, height / 2 - 15, 30, 30, 100, 2);
     gui = new GUI();
 
-    gameState = 1;
+    gameState = 3;
 }
 
 function draw() {
@@ -85,11 +87,22 @@ function draw() {
 
             if (!sceneSetup) {
                 exits.add(new Exit(0, 0, 5, height, 2));
-                zombies.add(new Zombie(width / 2, height / 2 - 15, 30, 30, 60, 1));
+                //zombies.add(new Zombie(width / 2, height / 2 - 15, 30, 30, 60, 1));
+                walls.add(new Wall(346, 15, 185, 135))
+                medkit = new Medkit(218, 350);
                 sceneSetup = true;
             }
+
+            medkit.draw();
+
+            if (medkit.collect(player)) {
+                player.restoreHp();
+            }
+
+            break;
     }
 
+    //TODO: Look at putting code in functions / classes
     cursor(CROSS);
 
     player.draw();
@@ -118,6 +131,11 @@ function draw() {
                 zombie.removeHp(20);
             }
         }
+    }
+
+    for (let wall of walls) {
+        wall.collide(player);
+        //wall.drawRect();
     }
 
     for (let exit of exits) {
