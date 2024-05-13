@@ -163,3 +163,35 @@ class Zombie extends Character {
         }
     }
 }
+
+class NPC extends Character {
+    constructor(x, y, width, height, speed) {
+        super(x, y, width, height, speed)
+
+        this.setRectangle(80, 80);
+    }
+
+    draw() {
+        //this.drawRect();
+
+        ellipseMode(CORNER)
+        strokeWeight(2);
+        stroke(0);
+        fill(242, 213, 177);
+        circle(this.getX() + 25, this.getY() + 25, 30);
+
+        stroke(204, 0, 204);
+        rect(this.getX(), this.getY(), this.getWidth(), this.getHeight)
+    }
+
+    speak(player, dialogue) {
+        if (this.hit(player)) {
+            textAlign(CENTER, BOTTOM);
+            noStroke();
+            textSize(15);
+            fill(255);
+            text(dialogue[0], this.getX() - 60, this.getY() - 80, 200, 100);
+            textAlign(LEFT, BASELINE);
+        }
+    }
+}
