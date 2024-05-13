@@ -79,6 +79,10 @@ function draw() {
 
             gun.draw();
 
+            if (gun.collect(player)) {
+                player.hasGun();
+            }
+
             break;
         case 2:
             //Room 2
@@ -114,6 +118,10 @@ function draw() {
 
             medkit.draw();
 
+            if (medkit.collect(player)) {
+                player.restoreHp();
+            }
+
             break;
         case 4:
             background(imgRoom4);
@@ -148,6 +156,10 @@ function draw() {
                 key.draw();
             }
 
+            if (key.collect(player)) {
+                player.hasKey();
+            }
+
             break;
         case 6:
             background(imgRoom6);
@@ -166,19 +178,7 @@ function draw() {
 
     player.draw();
     player.move();
-
-    if (gun.collect(player)) {
-        player.hasGun();
-    }
-
-    if (medkit.collect(player)) {
-        player.restoreHp();
-    }
-
-    if (key.collect(player)) {
-        player.hasKey();
-    }
-
+    
     for (let zombie of zombies) {
         zombie.draw();
         zombie.move(player.getX(), player.getY());
