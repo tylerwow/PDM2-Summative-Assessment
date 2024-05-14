@@ -23,12 +23,7 @@ let medkit;
 
 let npc;
 
-let npcDialogue1 = [
-    "Thanks for saving me! (E)",
-    "There are more people who need saving! (E)",
-    "Take this key, you might find it useful. (E)",
-    "Please, stay safe!"
-]
+let npcDialogue = []
 
 let imgRoom1;
 let imgRoom2;
@@ -37,6 +32,17 @@ let imgRoom4;
 let imgRoom5;
 let imgRoom6;
 let imgRoom7;
+let imgRoom8;
+let imgRoom9;
+let imgRoom10;
+let imgRoom11;
+let imgRoom12;
+let imgRoom13;
+let imgRoom14;
+let imgRoom15;
+let imgRoom16;
+let imgRoom17;
+let imgRoom18;
 
 let gameState;
 
@@ -50,6 +56,17 @@ function preload() {
     imgRoom5 = loadImage('assets/Room5.png');
     imgRoom6 = loadImage('assets/Room6.png');
     imgRoom7 = loadImage('assets/Room7.png');
+    imgRoom8 = loadImage('assets/Room8.png');
+    imgRoom9 = loadImage('assets/Room9.png');
+    imgRoom10 = loadImage('assets/Room10.png');
+    imgRoom11 = loadImage('assets/Room11.png');
+    imgRoom12 = loadImage('assets/Room12.png');
+    imgRoom13 = loadImage('assets/Room13.png');
+    imgRoom14 = loadImage('assets/Room14.png');
+    imgRoom15 = loadImage('assets/Room15.png');
+    imgRoom16 = loadImage('assets/Room16.png');
+    imgRoom17 = loadImage('assets/Room17.png');
+    imgRoom18 = loadImage('assets/Room18.png');
 }
 
 function setup() {
@@ -63,7 +80,7 @@ function setup() {
     
     gui = new GUI();
 
-    gameState = 1;
+    gameState = 13;
 }
 
 function draw() {
@@ -162,7 +179,14 @@ function draw() {
 
                 npc = new NPC(445, 190, 30, 30, 0);
 
-                key = new Key(275, 310);
+                npcDialogue = [
+                    "Thanks for saving me! (E)",
+                    "There are more people who need saving! (E)",
+                    "Take this key, you might find it useful. (E)",
+                    "Please, stay safe!"
+                ]
+
+                key = new Key(275, 250);
 
                 sceneSetup = true;
             }
@@ -170,10 +194,10 @@ function draw() {
             npc.draw();
 
             if (zombies.size === 0) {
-                npc.speak(player, npcDialogue1);
+                npc.speak(player, npcDialogue);
             }
 
-            if (npcDialogue1.length < 2) {
+            if (npcDialogue.length < 2) {
                 if (!player.getHasKey()) {
                     key.draw();
                 }
@@ -226,12 +250,145 @@ function draw() {
             background(imgRoom7);
 
             if (!sceneSetup) {
+                exits.add(new Exit(0, 0, width, 5, 8, false));
                 exits.add(new Exit(0, height - 5, width, 5, 5, false));
                 walls.add(new Wall(84, 260, 111, 110));
                 walls.add(new Wall(119, 41, 111, 110));
                 zombies.add(new Zombie(width / 2 + 100, 50 + 100, 30, 30, 60, 1));
                 sceneSetup = true;
             }
+
+            break;
+        case 8:
+            background(imgRoom8);
+
+            if (!sceneSetup) {
+                exits.add(new Exit(0, 0, width, 5, 12, false));
+                exits.add(new Exit(0, height - 5, width, 5, 7, false));
+                exits.add(new Exit(0, 0, 5, height, 9, true));
+                zombies.add(new Zombie(width / 2 + 100, 50 + 100, 30, 30, 60, 1));
+                zombies.add(new Zombie(width / 2 - 150, 210, 30, 30, 60, 1));
+
+
+                sceneSetup = true;
+            }
+
+            break;
+        case 9:
+            background(imgRoom9);
+
+            if (!sceneSetup) {
+                exits.add(new Exit(width - 5, 0, 5, height, 8, true));
+                exits.add(new Exit(0, height - 5, width, 5, 10, false));
+                walls.add(new Wall(57, 0, 112, 55, true));
+                walls.add(new Wall(445, 395, 112, 55, true));
+                walls.add(new Wall(30, 148, 10, 50, true));
+                walls.add(new Wall(30, 250, 10, 50, true));
+
+                sceneSetup = true;
+            }
+
+            break;
+        case 10:
+            background(imgRoom10);
+
+            if (!sceneSetup) {
+                exits.add(new Exit(0, 0, width, 5, 9, false));
+                exits.add(new Door(275, 150, 50, 20, 11, width / 2 - 15, height / 2 - 15 + 150, true));
+                walls.add(new Wall(45, 40, 111, 110));
+                walls.add(new Wall(65, 295, 111, 110));
+                walls.add(new Wall(458, 295, 111, 110));
+                walls.add(new Wall(445, 0, 111, 55));
+                walls.add(new Wall(207, 168, 185, 135));
+
+                sceneSetup = true;
+            }
+
+            break;
+        case 11:
+            background(imgRoom11);
+
+            if (!sceneSetup) {
+                exits.add(new Door(250, 405, 100, 30, 10, 285, 100, false));
+
+                sceneSetup = true;
+            }
+
+            break;
+        case 12:
+            background(imgRoom12);
+
+            if (!sceneSetup) {
+                exits.add(new Exit(0, 0, width, 5, 13, false));
+                exits.add(new Exit(0, height - 5, width, 5, 8, false));
+                walls.add(new Wall(42, 18, 111, 110));
+                walls.add(new Wall(142, 170, 111, 110));
+                walls.add(new Wall(42, 323, 111, 110));
+
+                sceneSetup = true;
+            }
+
+            break;
+        case 13:
+            background(imgRoom13);
+            
+            if (!sceneSetup) {
+                exits.add(new Exit(0, 0, width, 5, 16, false));
+                exits.add(new Exit(0, height - 5, width, 5, 12, false));
+                exits.add(new Exit(0, 0, 5, height, 14, true));
+                
+
+                sceneSetup = true;
+            }
+
+            break;
+        case 14:
+            background(imgRoom14);
+
+            if (!sceneSetup) {
+                exits.add(new Exit(width - 5, 0, 5, height, 13, true));
+                exits.add(new Door(185, 200, 20, 50, 15, width / 2 - 15, height / 2 - 15 + 150, true));
+                sceneSetup = true;
+            }
+
+            break;
+        case 15:
+            background(imgRoom15);
+
+            if (!sceneSetup) {
+                exits.add(new Door(250, 405, 100, 30, 14, 225, 210, false));
+                sceneSetup = true;
+            }
+
+            break;
+        case 16:
+            background(imgRoom16);
+
+            if (!sceneSetup) {
+                exits.add(new Exit(0, 0, width, 5, 17, false));
+                exits.add(new Exit(0, height - 5, width, 5, 13, false));
+                sceneSetup = true;
+            }
+
+            break;
+        case 17:
+            background(imgRoom17);
+
+            if (!sceneSetup) {
+                exits.add(new Exit(0, 0, width, 5, 18, false));
+                exits.add(new Exit(0, height - 5, width, 5, 16, false));
+                sceneSetup = true;
+            }
+
+            break;
+        case 18:
+            background(imgRoom18);
+            if (!sceneSetup) {
+
+                sceneSetup = true;
+            }
+
+            break;
     }
 
     //TODO: Look at putting code in functions / classes
@@ -276,11 +433,11 @@ function draw() {
 
     for (let wall of walls) {
         wall.collide(player);
-        //wall.drawRect();
+        wall.drawRect();
     }
 
     for (let exit of exits) {
-        //exit.drawRect();
+        exit.drawRect();
 
         if (exit.getIsDoor()) {
             if (exit.open(player)) {
@@ -335,6 +492,6 @@ function mousePressed() {
 
 function keyPressed() {
     if (player.hit(npc) && keyCode === 69) {
-        npcDialogue1.shift();
+        npcDialogue.shift();
     }
 }
