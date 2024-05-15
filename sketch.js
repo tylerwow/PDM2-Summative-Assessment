@@ -80,7 +80,7 @@ function setup() {
     
     gui = new GUI();
 
-    gameState = 13;
+    gameState = 1;
 }
 
 function draw() {
@@ -433,11 +433,11 @@ function draw() {
 
     for (let wall of walls) {
         wall.collide(player);
-        wall.drawRect();
+        //wall.drawRect();
     }
 
     for (let exit of exits) {
-        exit.drawRect();
+        //exit.drawRect();
 
         if (exit.getIsDoor()) {
             if (exit.open(player)) {
