@@ -2,8 +2,13 @@
 class Bullet extends GameObject {
     #mx;
     #my;
+    #yRatio;
+    #xRatio;
     #yDif;
     #xDif;
+    #xSpeed;
+    #ySpeed;
+    #dist;
 
     constructor(x, y, width, height, mx, my) {
         super(x, y, width, height);
@@ -13,22 +18,17 @@ class Bullet extends GameObject {
         this.#xDif = this.#mx - this.getX();
         this.#yDif = this.#my - this.getY();
 
-        if (this.#xDif >= this.#yDif && this.#xDif > 0) {
-            this.#yDif = this.#yDif / this.#xDif * 5;
-            this.#xDif = 5;
-        }
-        if (this.#yDif >= this.#xDif && this.#yDif > 0) {
-            this.#xDif = this.#xDif / this.#yDif * 5;
-            this.#yDif = 5;
-        }
-        if (this.#xDif <= this.#yDif && this.#xDif < 0) {
-            this.#yDif = this.#yDif / this.#xDif * -5;
-            this.#xDif = -5;
-        }
-        if (this.#yDif <= this.#xDif && this.#yDif < 0) {
-            this.#xDif = this.#xDif / this.#yDif * -5;
-            this.#yDif = -5;
-        }
+        /** * This code uses an example from the MDN web docs *
+        * Author: Mozilla (author name unknown)
+        * URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sqrt
+        * Accessed: 15/05/2024 */
+        this.#dist = sqrt(this.#xDif * this.#xDif + this.#yDif * this.#yDif);
+
+        this.#xRatio = this.#xDif / this.#dist;
+        this.#yRatio = this.#yDif / this.#dist;
+
+        this.#xSpeed = this.#xRatio * 5;
+        this.#ySpeed = this.#yRatio * 5;
 
         this.setRectangle(this.getWidth(), this.getHeight());
     }
@@ -46,7 +46,7 @@ class Bullet extends GameObject {
     }
 
     move() {
-        this.setX(this.getX() + this.#xDif);
-        this.setY(this.getY() + this.#yDif);
+        this.setX(this.getX() + this.#xSpeed);
+        this.setY(this.getY() + this.#ySpeed);
     }
 }

@@ -51,14 +51,16 @@ class Player extends Character {
     draw() {
         //this.drawRect();
 
-        ellipseMode(CORNER)
-        strokeWeight(2);
-        stroke(0);
-        fill(242, 213, 177);
-        circle(this.getX(), this.getY(), 30);
-
-        stroke(204, 0, 204);
-        rect(this.getX(), this.getY(), this.getWidth(), this.getHeight)
+        if (this.getActive()) {
+            ellipseMode(CORNER)
+            strokeWeight(2);
+            stroke(0);
+            fill(242, 213, 177);
+            circle(this.getX(), this.getY(), 30);
+    
+            stroke(204, 0, 204);
+            rect(this.getX(), this.getY(), this.getWidth(), this.getHeight)    
+        }
     }
 
     move() {
@@ -133,7 +135,7 @@ class Zombie extends Character {
             strokeWeight(2);
             stroke(0);
             fill(34, 125, 14);
-            circle(this.getX(), this.getY(), 30);
+            circle(this.getX(), this.getY(), this.getWidth());
 
             noStroke();
             fill(0);
@@ -141,10 +143,6 @@ class Zombie extends Character {
 
             fill(235, 64, 52);
             rect(this.getX(), this.getY() - 10, this.getHp() / 2, 5);
-
-            // stroke(176, 66, 245);
-            // noFill();
-            // rect(this.getX(), this.getY(), this.getWidth(), this.getHeight())
         }
     }
 
@@ -160,6 +158,34 @@ class Zombie extends Character {
         }
         if (this.getY() > playerY) {
             this.setY(this.getY() - this.getSpeed());
+        }
+    }
+}
+
+class LargeZombie extends Zombie {
+    constructor(x, y, width, height, hp, speed) {
+        super(x, y, width, height, hp, speed);
+
+        this.setRectangle(this.getWidth(), this.getHeight());
+    }
+
+    draw() {
+        //this.drawRect();
+
+        if (this.getActive()) {
+            ellipseMode(CORNER)
+
+            strokeWeight(2);
+            stroke(0);
+            fill(34, 125, 14);
+            circle(this.getX(), this.getY(), this.getWidth());
+
+            noStroke();
+            fill(0);
+            rect(this.getX() + 2, this.getY() - 10, 30, 5);
+
+            fill(235, 64, 52);
+            rect(this.getX() + 2, this.getY() - 10, this.getHp() / 3.3, 5);
         }
     }
 }
