@@ -1,4 +1,3 @@
-//TODO: Fix issue with bullet speed
 class Bullet extends GameObject {
     #mx;
     #my;
@@ -10,6 +9,15 @@ class Bullet extends GameObject {
     #ySpeed;
     #dist;
 
+    /**
+     * Creates bullet object and sets x and y speeds
+     * @param {number} x Bullet x position 
+     * @param {number} y Bullet y position
+     * @param {number} width Bullet width 
+     * @param {number} height Bullet height 
+     * @param {number} mx Mouse x position
+     * @param {number} my Mouse y position
+     */
     constructor(x, y, width, height, mx, my) {
         super(x, y, width, height);
         this.#mx = mx;
@@ -33,9 +41,10 @@ class Bullet extends GameObject {
         this.setRectangle(this.getWidth(), this.getHeight());
     }
 
+    /**
+     * Draws bullet object on canvas
+     */
     draw() {
-        //this.drawRect();
-
         if (this.getActive()) {
             ellipseMode(CORNER);
             strokeWeight(1);
@@ -45,6 +54,9 @@ class Bullet extends GameObject {
         }
     }
 
+    /**
+     * Moves bullet object to mouse position
+     */
     move() {
         this.setX(this.getX() + this.#xSpeed);
         this.setY(this.getY() + this.#ySpeed);

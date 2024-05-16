@@ -1,17 +1,6 @@
-/*
-TODO:
-- GUI tutorial + reloading feedback
-- Add sounds
-- Zombie on Zombie collisions
-- Clean code / create functions
-- Comments for everything
-- Complete report
-*/
-
-let gui;
-
 let player;
 
+//Game object sets
 const zombies = new Set();
 const bullets = new Set();
 const walls = new Set();
@@ -21,10 +10,13 @@ let gun;
 let key;
 let medkit;
 
+let gui;
+
 let npc;
 
 let npcDialogue = []
 
+//Background images
 let imgRoom1;
 let imgRoom2;
 let imgRoom3;
@@ -47,6 +39,14 @@ let imgTitleScreen;
 let imgDeathScreen;
 let imgEndScreen;
 
+//Sounds
+let soundGunshot;
+let soundReload;
+let soundKey;
+let soundBandage;
+let soundUnlock;
+
+//Game state to show rooms
 let gameState;
 
 let sceneSetup = false;
@@ -81,12 +81,19 @@ function preload() {
     imgTitleScreen = loadImage('assets/Title.png');
     imgDeathScreen = loadImage('assets/Death.png');
     imgEndScreen = loadImage('assets/End.png');
+
+    soundGunshot = loadSound('assets/gunshot.mp3');
+    soundReload = loadSound('assets/reload.mp3'); 
+    soundKey = loadSound('assets/key.mp3');
+    soundBandage = loadSound('assets/bandage.mp3');
+    soundUnlock = loadSound('assets/unlock.mp3');
 }
 
 function setup() {
     createCanvas(600, 450);
     
-    player = new Player(-100, -100, 30, 30, 100, 2);
+    player = new Player(width / 2 - 30, height / 2 - 15, 30, 30, 100, 2);
+
     player.deactivate();
 
     gun = new Gun();
@@ -102,9 +109,34 @@ function setup() {
 
     bulletCount = 8;
     isReloading = false;
+
+    soundGunshot.setVolume(0.1);
+    soundReload.setVolume(0.1);
+    soundKey.setVolume(0.5);
+    soundBandage.setVolume(0.1);
+    soundUnlock.setVolume(0.7);
 }
 
 function draw() {
+    manageGameState();
+
+    managePlayer();
+    
+    manageZombies();
+    
+    manageGun();
+
+    manageWalls();
+
+    manageExits();
+
+    manageGUI();
+}
+
+/**
+ * Uses a finite state machine to manage the game's state
+ */
+function manageGameState() {
     switch (gameState) {
         case 0:
             //Title Screen
@@ -121,8 +153,6 @@ function draw() {
 
             if (!sceneSetup) {
                 player.activate();
-                player.setX(width / 2 - 30);
-                player.setY(height / 2 - 15);
                 exits.add(new Exit(width - 5, 0, 5, height, 2, true));
                 walls.add(new Wall(76, 68, 111, 110));
                 walls.add(new Wall(396, 16, 111, 110));
@@ -140,6 +170,17 @@ function draw() {
             if (gun.collect(player)) {
                 cursor(CROSS);
                 player.hasGun();
+
+                soundReload.play();
+            }
+
+            if (player.getHasGun()) {
+                if (bulletCount > 0) {
+                    gui.drawGunTutorial();
+                }
+            }
+            else {
+                gui.drawMovementTutorial();
             }
 
             break;
@@ -180,10 +221,13 @@ function draw() {
 
             if (medkit.collect(player)) {
                 player.restoreHp();
+
+                soundBandage.play();
             }
 
             break;
         case 4:
+            //Room 4
             background(imgRoom4);
 
             if (!sceneSetup) {
@@ -205,8 +249,8 @@ function draw() {
                 walls.add(new Wall(375, 283, 61, 10, true));
                 walls.add(new Wall(375, 368, 61, 10, true));
                 walls.add(new Wall(370, 60, 37, 37, true));
-                zombies.add(new Zombie(275, 100, 30, 30, 60, 1));
                 zombies.add(new Zombie(155, 300, 30, 30, 60, 1));
+                zombies.add(new Zombie(275, 100, 30, 30, 60, 1));
 
                 npc = new NPC(445, 190, 30, 30, 0);
 
@@ -237,11 +281,14 @@ function draw() {
 
                 if (key.collect(player)) {
                     player.hasKey();
+
+                    soundKey.play();
                 }
             }
 
             break;
         case 5:
+            //Room 5
             background(imgRoom5);
 
             if (!sceneSetup) {
@@ -257,6 +304,7 @@ function draw() {
 
             break;
         case 6:
+            //Room 6
             background(imgRoom6);
 
             if (!sceneSetup) {
@@ -276,10 +324,13 @@ function draw() {
 
             if (key.collect(player)) {
                 player.hasKey();
+
+                soundKey.play();
             }
 
             break;
         case 7:
+            //Room 7
             background(imgRoom7);
 
             if (!sceneSetup) {
@@ -293,6 +344,7 @@ function draw() {
 
             break;
         case 8:
+            //Room 8
             background(imgRoom8);
 
             if (!sceneSetup) {
@@ -302,12 +354,12 @@ function draw() {
                 zombies.add(new Zombie(width / 2 + 100, 50 + 100, 30, 30, 60, 1));
                 zombies.add(new Zombie(width / 2 - 150, 210, 30, 30, 60, 1));
 
-
                 sceneSetup = true;
             }
 
             break;
         case 9:
+            //Room 9
             background(imgRoom9);
 
             if (!sceneSetup) {
@@ -323,6 +375,7 @@ function draw() {
 
             break;
         case 10:
+            //Room 10
             background(imgRoom10);
 
             if (!sceneSetup) {
@@ -339,6 +392,7 @@ function draw() {
 
             break;
         case 11:
+            //Room 11
             background(imgRoom11);
 
             if (!sceneSetup) {
@@ -393,11 +447,14 @@ function draw() {
 
                 if (key.collect(player)) {
                     player.hasKey();
+
+                    soundKey.play();
                 }
             }
 
             break;
         case 12:
+            //Room 12
             background(imgRoom12);
 
             if (!sceneSetup) {
@@ -424,6 +481,7 @@ function draw() {
 
             break;
         case 13:
+            //Room 13
             background(imgRoom13);
             
             if (!sceneSetup) {
@@ -442,6 +500,7 @@ function draw() {
 
             break;
         case 14:
+            //Room 14
             background(imgRoom14);
 
             if (!sceneSetup) {
@@ -459,6 +518,7 @@ function draw() {
 
             break;
         case 15:
+            //Room 15
             background(imgRoom15);
 
             if (!sceneSetup) {
@@ -510,11 +570,14 @@ function draw() {
                 
                 if (medkit.collect(player)) {
                     player.restoreHp();
+
+                    soundBandage.play();
                 }
             }
 
             break;
         case 16:
+            //Room 16
             background(imgRoom16);
 
             if (!sceneSetup) {
@@ -530,6 +593,7 @@ function draw() {
 
             break;
         case 17:
+            //Room 17
             background(imgRoom17);
 
             if (!sceneSetup) {
@@ -544,6 +608,7 @@ function draw() {
 
             break;
         case 18:
+            //Room 18
             background(imgRoom18);
             if (!sceneSetup) {
                 walls.add(new Wall(0, 0, width, 132));
@@ -555,7 +620,7 @@ function draw() {
 
             break;
         case 19:
-            //DEATH SCREEN
+            //Death Screen
             background(imgDeathScreen);
 
             if (!sceneSetup) {
@@ -567,6 +632,9 @@ function draw() {
             if (keyIsDown(32)) {
                 gameState = 1;
 
+                player.setX(width / 2 - 30);
+                player.setY(height / 2 - 15);
+
                 killCount = 0;
                 saveCount = 0;
                 
@@ -575,15 +643,17 @@ function draw() {
 
             break;
         case 20:
-            //END SCREEN
+            //End Screen
             background(imgEndScreen);
 
             noStroke();
             fill(255);
             textSize(20);
             textAlign(CENTER);
+
             text('ZOMBIES KILLED: ' + killCount, width / 2, 320);
             text('SURVIVORS SAVED: ' + saveCount + '/3', width / 2, 345);
+            
             textAlign(LEFT)
 
             if (!sceneSetup) {
@@ -596,6 +666,10 @@ function draw() {
             if (keyIsDown(32)) {
                 gameState = 1;
 
+                
+                player.setX(width / 2 - 30);
+                player.setY(height / 2 - 15);
+
                 killCount = 0;
                 saveCount = 0;
 
@@ -604,9 +678,12 @@ function draw() {
 
             break;
     }
+}
 
-    //TODO: Look at putting code in functions / classes
-
+/**
+ * Manages player object
+ */
+function managePlayer() {
     player.draw();
     player.move();
 
@@ -615,7 +692,12 @@ function draw() {
         sceneSetup = false;
         clearSets();
     }
-    
+}
+
+/**
+ * Manages zombie object in set
+ */
+function manageZombies() {
     for (let zombie of zombies) {
         zombie.draw();
         zombie.move(player.getX(), player.getY());
@@ -631,8 +713,17 @@ function draw() {
         for (let wall of walls) {
             wall.collide(zombie);
         }
+
+        for(let zombie2 of zombies) {
+            zombie.collide(zombie2);
+        }
     }
-    
+}
+
+/**
+ * Manages gun and bullet objects
+ */
+function manageGun() {
     for (let bullet of bullets) {
         bullet.draw();
         bullet.move();
@@ -660,6 +751,8 @@ function draw() {
             if (keyIsDown(82)) {
                 currentFrame = frameCount;
                 isReloading = true;
+
+                soundReload.play();
             }
         }
     }
@@ -673,14 +766,29 @@ function draw() {
         isReloading = false;
     }
 
-    for (let wall of walls) {
-        wall.collide(player);
-        //wall.drawRect();
+    if (isReloading) {
+        gui.drawReloading(frameCount - currentFrame);
     }
 
-    for (let exit of exits) {
-        //exit.drawRect();
+    if (bulletCount < 1) {
+        gui.drawReloadTutorial()
+    }
+}
 
+/**
+ * Manages collisions will wall and player
+ */
+function manageWalls() {
+    for (let wall of walls) {
+        wall.collide(player);
+    }
+}
+
+/**
+ * Manages exits for the player
+ */
+function manageExits() {
+    for (let exit of exits) {
         if (exit.getIsDoor()) {
             if (exit.open(player)) {
                 gameState = exit.getDestination();
@@ -689,6 +797,8 @@ function draw() {
 
                 clearSets();
                 sceneSetup = false;
+
+                soundUnlock.play();
             }
         }
         else if (player.hit(exit)) {
@@ -715,12 +825,20 @@ function draw() {
             sceneSetup = false;
         }
     }
+}
 
+/**
+ * Manages on screen GUI
+ */
+function manageGUI() {
     if (gameState > 0 && gameState < 19) {
-        gui.draw(player.getHp(), player.getHasGun(), player.getHasKey(), bulletCount);
+        gui.draw(player, bulletCount);
     }
 }
 
+/**
+ * Clears sets with objects
+ */
 function clearSets() {
     zombies.clear();
     bullets.clear();
@@ -737,6 +855,8 @@ function mousePressed() {
         }
 
         bullets.add(new Bullet(player.getX() + 15, player.getY() + 15, 8, 8, mouseX, mouseY)); 
+    
+        soundGunshot.play();
     }
 }
 

@@ -3,6 +3,15 @@ class Character extends GameObject {
     #maxHp;
     #speed;
 
+    /**
+     * Creates new character object
+     * @param {number} x X position of the character
+     * @param {number} y Y position of the character
+     * @param {number} width Width of the character
+     * @param {number} height Height of the character
+     * @param {number} maxHp Maximum health points of the character
+     * @param {number} speed Speed of the character
+     */
     constructor(x, y, width, height, maxHp, speed) {
         super(x, y, width, height);
         this.#maxHp = maxHp;
@@ -10,22 +19,41 @@ class Character extends GameObject {
         this.#speed = speed;
     }
 
+    /**
+     * Returns character speed
+     * @returns {number}
+     */
     getSpeed() {
         return this.#speed;
     }
 
+    /**
+     * Returns character's HP
+     * @returns {number}
+     */
     getHp() {
         return this.#hp;
     }
 
+    /**
+     * Sets speed of the character
+     * @param {number} newSpeed New speed of the character
+     */
     setSpeed(newSpeed) {
         this.#speed = newSpeed;
     }
 
+    /**
+     * Restores HP to maximum
+     */
     restoreHp() {
         this.#hp = this.#maxHp;
     }
 
+    /**
+     * Removes HP from total
+     * @param {number} amount Amount to remove HP by
+     */
     removeHp(amount) {
         this.#hp -= amount;
         if (this.#hp <= 0) {
@@ -39,6 +67,15 @@ class Player extends Character {
     #hasGun;
     #hasKey;
 
+    /**
+     * Creates new character object
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {number} hp 
+     * @param {number} speed 
+     */
     constructor(x, y, width, height, hp, speed) {
         super(x, y, width, height, hp, speed);
 
@@ -48,9 +85,10 @@ class Player extends Character {
         this.#hasKey = false;
     }
 
+    /**
+     * Draws character object on canvas
+     */
     draw() {
-        //this.drawRect();
-
         if (this.getActive()) {
             ellipseMode(CORNER)
             strokeWeight(2);
@@ -63,6 +101,9 @@ class Player extends Character {
         }
     }
 
+    /**
+     * Moves character used WASD and stops player from going out of bounds
+     */
     move() {
         if(this.getActive()) {
             if (keyIsDown(87)) { // W
@@ -94,41 +135,71 @@ class Player extends Character {
         }
     }
 
+    /**
+     * Sets hasGun to true
+     */
     hasGun() {
         this.#hasGun = true;
     }
 
+    /**
+     * Sets hasGun to false
+     */
     hasNoGun() {
         this.#hasGun = false;
     }
 
+    /**
+     * Returns hasGun
+     * @returns {boolean}
+     */
     getHasGun() {
         return this.#hasGun;
     }
 
+    /**
+     * Sets hasKey to true
+     */
     hasKey() {
         this.#hasKey = true;
     }
     
+    /**
+     * Sets hasKey to false
+     */
     hasNoKey() {
         this.#hasKey = false;
     }
 
+    /**
+     * Returns hasKey
+     * @returns {boolean}
+     */
     getHasKey() {
         return this.#hasKey;
     }
 }
 
 class Zombie extends Character {
+    /**
+     * Creates new Zombie object
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {number} hp 
+     * @param {number} speed 
+     */
     constructor(x, y, width, height, hp, speed) {
         super(x, y, width, height, hp, speed);
 
         this.setRectangle(this.getWidth(), this.getHeight());
     }
 
+    /**
+     * Draws zombie object on canvas
+     */
     draw() {
-        //this.drawRect();
-
         if (this.getActive()) {
             ellipseMode(CORNER)
 
@@ -146,6 +217,11 @@ class Zombie extends Character {
         }
     }
 
+    /**
+     * Moves zombie towards player position
+     * @param {number} playerX 
+     * @param {number} playerY 
+     */
     move(playerX, playerY) {
         if (this.getX() < playerX) {
             this.setX(this.getX() + this.getSpeed());
@@ -163,15 +239,25 @@ class Zombie extends Character {
 }
 
 class LargeZombie extends Zombie {
+    /**
+     * Creates large zombie object
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {number} hp 
+     * @param {number} speed 
+     */
     constructor(x, y, width, height, hp, speed) {
         super(x, y, width, height, hp, speed);
 
         this.setRectangle(this.getWidth(), this.getHeight());
     }
 
+    /**
+     * Draws large zombie object on canvas
+     */
     draw() {
-        //this.drawRect();
-
         if (this.getActive()) {
             ellipseMode(CORNER)
 
@@ -191,15 +277,24 @@ class LargeZombie extends Zombie {
 }
 
 class NPC extends Character {
+    /**
+     * Creates NPC object
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {number} speed 
+     */
     constructor(x, y, width, height, speed) {
         super(x, y, width, height, speed)
 
         this.setRectangle(80, 80);
     }
 
+    /**
+     * Draws NPC object on canvas
+     */
     draw() {
-        //this.drawRect();
-
         ellipseMode(CORNER)
         strokeWeight(2);
         stroke(0);
@@ -210,6 +305,11 @@ class NPC extends Character {
         rect(this.getX(), this.getY(), this.getWidth(), this.getHeight)
     }
 
+    /**
+     * Initiates dialogue between player
+     * @param {object} player 
+     * @param {array} dialogue 
+     */
     speak(player, dialogue) {
         if (this.hit(player)) {
             textAlign(CENTER, BOTTOM);
