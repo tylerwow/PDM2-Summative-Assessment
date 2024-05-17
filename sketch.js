@@ -49,7 +49,11 @@ let soundUnlock;
 //Game state to show rooms
 let gameState;
 
-let sceneSetup = false;
+let sceneSetup;
+
+let hasKey1;
+let hasKey2;
+let hasKey3;
 
 let killCount;
 let saveCount;
@@ -99,7 +103,9 @@ function setup() {
     gun = new Gun();
     key = new Key();
     medkit = new Medkit();
-    
+
+    npc = new NPC();
+
     gui = new GUI();
 
     gameState = 0;
@@ -107,8 +113,14 @@ function setup() {
     killCount = 0;
     saveCount = 0;
 
+    sceneSetup = false;
+
     bulletCount = 8;
     isReloading = false;
+
+    hasKey1 = false;
+    hasKey2 = false;
+    hasKey3 = false;
 
     soundGunshot.setVolume(0.1);
     soundReload.setVolume(0.1);
@@ -158,6 +170,14 @@ function manageGameState() {
                 walls.add(new Wall(396, 16, 111, 110));
                 walls.add(new Wall(42, 267, 111, 110));
                 walls.add(new Wall(295, 319, 111, 110))
+                npc = new NPC(470, 185, 30, 30, 0);
+
+                npcDialogue = [
+                    "Please... [E]",
+                    "Take my gun... [E]",
+                    "And save people from the zombies [E]",
+                    "..."
+                ]
 
                 if (!player.getHasGun()) {
                     gun = new Gun(400, width / 2 - 100);
@@ -173,6 +193,10 @@ function manageGameState() {
 
                 soundReload.play();
             }
+            
+
+            npc.draw();
+            npc.speak(player, npcDialogue);
 
             if (player.getHasGun()) {
                 if (bulletCount > 0) {
@@ -263,7 +287,9 @@ function manageGameState() {
 
                 key = new Key(275, 250);
 
-                saveCount += 1;
+                if (!hasKey1) {
+                    saveCount += 1;
+                }
 
                 sceneSetup = true;
             }
@@ -275,12 +301,11 @@ function manageGameState() {
             }
 
             if (npcDialogue.length < 2) {
-                if (!player.getHasKey()) {
-                    key.draw();
-                }
+                key.draw();
 
                 if (key.collect(player)) {
                     player.hasKey();
+                    hasKey1 = true;
 
                     soundKey.play();
                 }
@@ -318,12 +343,13 @@ function manageGameState() {
                 sceneSetup = true;
             }
 
-            if (!player.getHasKey()) {
+            if (!hasKey2) {
                 key.draw();
             }
 
             if (key.collect(player)) {
                 player.hasKey();
+                hasKey2 = true;
 
                 soundKey.play();
             }
@@ -441,12 +467,13 @@ function manageGameState() {
             }
 
             if (npcDialogue.length < 2) {
-                if (!player.getHasKey()) {
+                if (!hasKey3) {
                     key.draw();
                 }
 
                 if (key.collect(player)) {
                     player.hasKey();
+                    hasKey3 = true;
 
                     soundKey.play();
                 }
@@ -467,11 +494,13 @@ function manageGameState() {
                 npc = new NPC(382, 150, 30, 30, 0);
 
                 npcDialogue = [
-                    "Quickly! [E]",
-                    "Make it to the beach! [E]",
-                    "That is your only chance to escape! [E]",
+                    "Quick! [E]",
+                    "Take this medkit and run for the beach! [E]",
+                    "The boat is your only chance to escape! [E]",
                     "Be careful!"
                 ]
+
+                medkit = new Medkit(396, 250);
 
                 sceneSetup = true;
             }
@@ -479,6 +508,16 @@ function manageGameState() {
             npc.draw();
             npc.speak(player, npcDialogue);
 
+            if (npcDialogue.length < 3) {
+                medkit.draw();
+
+                if (medkit.collect(player)) {
+                    player.restoreHp();
+    
+                    soundBandage.play();
+                }
+            }
+            
             break;
         case 13:
             //Room 13
@@ -574,6 +613,7 @@ function manageGameState() {
                     soundBandage.play();
                 }
             }
+            
 
             break;
         case 16:
@@ -615,8 +655,19 @@ function manageGameState() {
                 walls.add(new Wall(0, 132, 320, 132));
                 walls.add(new Wall(420, 132, 179, 132));
                 exits.add(new Exit(320, 132, 100, 50, 20, false));
+                
+                npc = new NPC(250, 280, 30, 30, 0);
+                
+                npcDialogue = [
+                    "Wow! Well done for getting through! [E]",
+                    "Now get on the boat and we can leave!"
+                ]
+
                 sceneSetup = true;
             }
+
+            npc.draw();
+            npc.speak(player, npcDialogue);
 
             break;
         case 19:
@@ -625,6 +676,9 @@ function manageGameState() {
 
             if (!sceneSetup) {
                 player.restoreHp();
+                player.hasNoGun();
+                player.hasNoKey();
+                bulletCount = 8;
 
                 sceneSetup = true;
             }
@@ -661,12 +715,12 @@ function manageGameState() {
                 player.restoreHp();
                 player.hasNoGun();
                 player.hasNoKey();
+                bulletCount = 8;
             }
 
             if (keyIsDown(32)) {
                 gameState = 1;
 
-                
                 player.setX(width / 2 - 30);
                 player.setY(height / 2 - 15);
 
@@ -742,6 +796,7 @@ function manageGun() {
         }
     }
 
+    //Handles gun cooldown and reloading
     if (player.getHasGun()) {
         if (!bulletCooldown && !isReloading && mouseIsPressed) {
             currentFrame = frameCount;
@@ -770,7 +825,7 @@ function manageGun() {
         gui.drawReloading(frameCount - currentFrame);
     }
 
-    if (bulletCount < 1) {
+    if (bulletCount < 1 && gameState > 1 && gameState < 19) {
         gui.drawReloadTutorial()
     }
 }
