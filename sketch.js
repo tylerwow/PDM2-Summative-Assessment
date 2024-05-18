@@ -755,7 +755,7 @@ function managePlayer() {
 function manageZombies() {
     for (let zombie of zombies) {
         zombie.draw();
-        zombie.move(player.getX(), player.getY());
+        zombie.move(player);
         
         if (!zombie.getActive()) {
             killCount += 1;

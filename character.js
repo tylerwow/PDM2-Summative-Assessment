@@ -219,20 +219,19 @@ class Zombie extends Character {
 
     /**
      * Moves zombie towards player position
-     * @param {number} playerX 
-     * @param {number} playerY 
+     * @param {object} player Player object to get position
      */
-    move(playerX, playerY) {
-        if (this.getX() < playerX) {
+    move(player) {
+        if (this.getX() < player.getX()) {
             this.setX(this.getX() + this.getSpeed());
         }
-        if (this.getX() > playerX) {
+        if (this.getX() > player.getX()) {
             this.setX(this.getX() - this.getSpeed());
         }
-        if (this.getY() < playerY) {
+        if (this.getY() < player.getY()) {
             this.setY(this.getY() + this.getSpeed());
         }
-        if (this.getY() > playerY) {
+        if (this.getY() > player.getY()) {
             this.setY(this.getY() - this.getSpeed());
         }
     }
