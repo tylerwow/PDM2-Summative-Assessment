@@ -655,7 +655,8 @@ function manageGameState() {
                 walls.add(new Wall(0, 132, 320, 132));
                 walls.add(new Wall(420, 132, 179, 132));
                 exits.add(new Exit(320, 132, 100, 50, 20, false));
-                
+                exits.add(new Exit(0, height - 5, width, 5, 17, false));
+
                 npc = new NPC(250, 280, 30, 30, 0);
                 
                 npcDialogue = [
