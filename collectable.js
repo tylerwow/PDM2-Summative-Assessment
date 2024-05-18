@@ -19,7 +19,7 @@ class Collectable extends GameObject {
             noStroke();
             textSize(15);
             fill(255);
-            text('Take (E)', this.getX() - 3, this.getY() - 5);
+            text('Take [E]', this.getX() - 3, this.getY() - 5);
             if (keyIsDown(69)) {
                 this.deactivate();
                 return true;
@@ -52,7 +52,7 @@ class Medkit extends Collectable {
             noStroke();
             textSize(15);
             fill(255);
-            text('Heal (E)', this.getX() - 3, this.getY() - 5);
+            text('Heal [E]', this.getX() - 3, this.getY() - 5);
             if (keyIsDown(69)) {
                 this.deactivate();
                 return true;
