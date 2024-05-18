@@ -660,8 +660,8 @@ function manageGameState() {
                 npc = new NPC(250, 280, 30, 30, 0);
                 
                 npcDialogue = [
-                    "Wow! Well done for getting through! [E]",
-                    "Now get on the boat and we can leave!"
+                    "Come on! [E]",
+                    "Get on the boat!"
                 ]
 
                 sceneSetup = true;
@@ -761,6 +761,7 @@ function manageZombies() {
             killCount += 1;
             zombies.delete(zombie);
         }
+
         if (player.hit(zombie)) {
             player.removeHp(1);
         }
