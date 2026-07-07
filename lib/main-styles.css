@@ -1,11 +1,6 @@
 body {
     display:flex;
     flex-direction: column;
-    padding: 5%;
-}
-
-canvas {
-  border: solid 1px rgb(0, 0, 0);
 }
 
 main {
@@ -29,7 +24,6 @@ pre {
 
 .guidance h2 {
     width:100%;
-
 }
 
 .block {
